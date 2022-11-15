@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  csi-rclone:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2022-11-15T03:02:11.929555893Z"
+    description: CSI plugin for rclone mount
+    digest: 715552488b93290098fdee4fcff37fde65173b04bd6ae5b4a2f918239b1ef161
+    name: csi-rclone
+    urls:
+    - https://github.com/gian-reto/helm-charts/releases/download/csi-rclone-0.1.0/csi-rclone-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-11-15T03:02:11.647545716Z"
