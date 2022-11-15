@@ -1,0 +1,36 @@
+suite: Controller
+templates:
+  - 1.13-csi-controller-rclone.yaml
+  - 1.19-csi-controller-rclone.yaml
+tests:
+  - it: is a stateful set (1.19)
+    template: 1.19-csi-controller-rclone.yaml
+    capabilities:
+      majorVersion: 1
+      minorVersion: 19
+    asserts:
+      - isKind:
+          of: StatefulSet
+
+  - it: can set resources (1.19)
+    template: 1.19-csi-controller-rclone.yaml
+    capabilities:
+      majorVersion: 1
+      minorVersion: 19
+    set:
+      controller:
+        attacher:
+          resources:
+            requests:
+              cpu: 123m
+        rclone:
+          resources:
+            requests:
+              cpu: 789m
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 123m
+      - equal:
+          path: spec.template.spec.containers[1].resources.requests.cpu
+          value: 789m
