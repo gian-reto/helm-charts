@@ -8,7 +8,7 @@ metadata:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: external-controller-rclone-{{ .Release.Namespace }}
+  name: external-controller-rclone
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -22,24 +22,25 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments"]
     verbs: ["get", "list", "watch", "update"]
+
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: csi-attacher-role-rclone-{{ .Release.Namespace }}
+  name: csi-attacher-role-rclone
 subjects:
   - kind: ServiceAccount
     name: csi-controller-rclone
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: external-controller-rclone-{{ .Release.Namespace }}
+  name: external-controller-rclone
   apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: csi-cluster-driver-registrar-role-{{ .Release.Namespace }}
+  name: csi-cluster-driver-registrar-role
 rules:
   - apiGroups: ["csi.storage.k8s.io"]
     resources: ["csidrivers"]
@@ -52,13 +53,13 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: csi-cluster-driver-registrar-binding-{{ .Release.Namespace }}
+  name: csi-cluster-driver-registrar-binding
 subjects:
   - kind: ServiceAccount
     name: csi-controller-rclone
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: csi-cluster-driver-registrar-role-{{ .Release.Namespace }}
+  name: csi-cluster-driver-registrar-role
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
