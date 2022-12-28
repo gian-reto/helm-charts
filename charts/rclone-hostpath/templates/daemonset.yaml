@@ -72,7 +72,7 @@ spec:
         emptyDir: {}
       - name: config-data
         secret:
-          secretName: {{ .Values.rclone.secretName }}
+          secretName: {{ .Values.rclone.configSecretName }}
           optional: false
       - name: data
         hostPath:
