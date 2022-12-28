@@ -41,7 +41,7 @@ spec:
         args:
           - mount
           - "{{ .Values.rclone.remote }}:{{ .Values.rclone.subPath }}"
-          - {{ .Values.rclone.path }}
+          - "{{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}"
           - --config=/etc/rclone/rclone.conf
           - --allow-non-empty
           - --allow-other
