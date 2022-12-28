@@ -1,0 +1,45 @@
+images:
+  initContainer:
+    repository: busybox
+    tag: latest
+  container:
+    repository: ghcr.io/gian-reto/rclone-hostpath
+    tag: v1.61.1
+  pullPolicy: IfNotPresent
+
+# imagePullSecrets:
+
+rclone:
+  # Name of the remote to mount (from rclone.conf), e.g. "dropbox"
+  remote: "remote"
+  # Path to mount the remote on the host
+  path: /mnt/rclone/remote
+  # Subpath on the remote, will be appended to `remote` and `path`
+  subPath: "data"
+  # Secret containing the rclone config, needs key `rclone.conf`
+  configSecretName: rclone-hostpath-secret
+  # Additional rclone mount arguments
+  mountArgs:
+    # - --dir-cache-time: 9999h
+    # - --vfs-cache-mode: full
+    # - --vfs-cache-max-size: 96G
+    # - --vfs-write-back: 5m
+    # - --vfs-cache-max-age: 9999h
+    # - --tpslimit: "12"
+    # - --tpslimit-burst: "12"
+    # - --disable-http2: "true"
+  # Directory on the host to store rclone data (cache, etc.)
+  dataDir: /var/lib/rclone/
+
+resources: {}
+nodeSelector: {}
+
+tolerations:
+  # These tolerations are to have the daemonset runnable on control plane nodes
+  # remove them if your control plane nodes should not run pods
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule
