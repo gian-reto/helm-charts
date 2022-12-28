@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: rclone-hostpath
+  IMAGE_NAME: gian-reto/rclone-hostpath
 
 jobs:
   build-and-push-image:
