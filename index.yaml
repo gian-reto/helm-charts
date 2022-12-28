@@ -19,4 +19,13 @@ entries:
     urls:
     - https://github.com/gian-reto/helm-charts/releases/download/csi-rclone-0.1.0/csi-rclone-0.1.0.tgz
     version: 0.1.0
+  rclone-hostpath:
+  - apiVersion: v2
+    created: "2022-12-28T21:57:18.776107936Z"
+    description: DaemonSet to create an rclone mount on a hostPath
+    digest: 752ecc2cd5f3610fb3dc46f5840a3094762fcf1a75aba5b9e77784bae1f71012
+    name: rclone-hostpath
+    urls:
+    - https://github.com/gian-reto/helm-charts/releases/download/rclone-hostpath-0.1.0/rclone-hostpath-0.1.0.tgz
+    version: 0.1.0
 generated: "2022-11-15T03:02:11.647545716Z"
