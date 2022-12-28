@@ -77,9 +77,11 @@ spec:
       - name: data
         hostPath:
           path: {{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}
+          type: DirectoryOrCreate
       - name: rclone-data
         hostPath:
           path: {{ .Values.rclone.dataDir }}
+          type: DirectoryOrCreate
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

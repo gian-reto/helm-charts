@@ -7,8 +7,6 @@ images:
     tag: latest
   pullPolicy: IfNotPresent
 
-# imagePullSecrets:
-
 rclone:
   # Name of the remote to mount (from rclone.conf), e.g. "dropbox"
   remote: "remote"
