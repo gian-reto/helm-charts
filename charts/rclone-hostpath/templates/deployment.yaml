@@ -27,31 +27,48 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      securityContext:
+        privileged: true
       initContainers:
       - name: {{ include "rclone-hostpath.fullname" . }}-config
         image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
-        command:
-          - cp
+        command: ["/bin/sh"]
         args:
-          - -v
-          - /in/rclone.conf
-          - /out/rclone.conf
+          - -c
+          - >-
+              cp -v /in/rclone.conf /out/rclone.conf &&
+              chown 1000:1000 /out/rclone.conf &&
+              chmod 766 /out/rclone.conf
         volumeMounts:
         - name: rclone-config
           mountPath: /in
           readOnly: true
         - name: config
           mountPath: /out
-      - name: {{ include "rclone-hostpath.fullname" . }}-clear
+      # - name: {{ include "rclone-hostpath.fullname" . }}-clear
+      #   image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
+      #   command:
+      #     - rm
+      #   args:
+      #     - -rf
+      #     - /data/*
+      #   volumeMounts:
+      #   - name: data
+      #     mountPath: /data
+      - name: {{ include "rclone-hostpath.fullname" . }}-directories
         image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
-        command:
-          - rm
+        command: ["/bin/sh"]
         args:
-          - -rf
-          - /data/*
+          - -c
+          - >-
+              rm -rf /data/* &&
+              chown -R 1000:1000 /data &&
+              chown -R 1000:1000 /cache
         volumeMounts:
         - name: data
           mountPath: /data
+        - name: cache
+          mountPath: /cache
       terminationGracePeriodSeconds: 120
       containers:
       - name: {{ include "rclone-hostpath.fullname" . }}
@@ -78,6 +95,8 @@ spec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
         securityContext:
           privileged: true
+          runAsUser: 1000
+          runAsGroup: 1000
           fsGroup: 1000
           fsGroupChangePolicy: "OnRootMismatch"
           capabilities:
