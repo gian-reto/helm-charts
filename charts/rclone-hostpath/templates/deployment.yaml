@@ -10,6 +10,9 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  {{ if .Values.replicaCount }}
+    replicas: {{ .Values.replicaCount }}
+  {{ end }}
   selector:
     matchLabels:
       app: {{ include "rclone-hostpath.fullname" . }}
@@ -20,9 +23,6 @@ spec:
         app: {{ include "rclone-hostpath.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-    {{ if .Values.replicas }}
-      replicas: {{ .Values.replicas }}
-    {{ end }}
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
