@@ -61,6 +61,7 @@ spec:
           - --cache-dir={{ .Values.rclone.cacheDir }}
           - --allow-non-empty
           - --allow-other
+          - --umask=000
         {{- range .Values.rclone.mountArgs }}
           - {{ . }}
         {{- end }}
