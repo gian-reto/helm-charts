@@ -37,6 +37,14 @@ entries:
     - https://github.com/gian-reto/helm-charts/releases/download/rclone-hostpath-0.2.0/rclone-hostpath-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v2
+    created: "2022-12-29T17:51:40.530251859Z"
+    description: Deployment to create an rclone mount on a hostPath
+    digest: a7a49d9842e5fe0cbbacf6acb364bdd4d678db56ec2fa31b810f1a9464d71a3f
+    name: rclone-hostpath
+    urls:
+    - https://github.com/gian-reto/helm-charts/releases/download/rclone-hostpath-0.1.4/rclone-hostpath-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
     created: "2022-12-29T17:37:49.203137922Z"
     description: Deployment to create an rclone mount on a hostPath
     digest: f767e6b91ef8d511e1a9286ee299d3314f04d24fba4de2c3b4478a09f5928ce9
