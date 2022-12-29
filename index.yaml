@@ -21,6 +21,14 @@ entries:
     version: 0.1.0
   rclone-hostpath:
   - apiVersion: v2
+    created: "2022-12-29T05:30:52.735551481Z"
+    description: Deployment to create an rclone mount on a hostPath
+    digest: 3516ff5ccad471f70bec060cd0bd9b836262cad8d308fad90773ce7634583527
+    name: rclone-hostpath
+    urls:
+    - https://github.com/gian-reto/helm-charts/releases/download/rclone-hostpath-0.2.1/rclone-hostpath-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
     created: "2022-12-29T03:28:44.005566316Z"
     description: Deployment to create an rclone mount on a hostPath
     digest: 5368cda582a7c364c90f5fb99feab99f207f3a0b38df414a8194173e31a8499d
