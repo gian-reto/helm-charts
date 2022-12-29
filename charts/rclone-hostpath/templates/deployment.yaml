@@ -20,6 +20,9 @@ spec:
         app: {{ include "rclone-hostpath.fullname" . }}
         release: {{ .Release.Name }}
     spec:
+    {{ if .Values.replicas }}
+      replicas: {{ .Values.replicas }}
+    {{ end }}
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -39,7 +42,7 @@ spec:
           readOnly: true
         - name: config
           mountPath: /out
-      - name: {{ include "rclone-hostpath.fullname" . }}-data
+      - name: {{ include "rclone-hostpath.fullname" . }}-clear
         image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
         command:
           - rm
