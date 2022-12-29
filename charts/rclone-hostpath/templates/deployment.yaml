@@ -29,6 +29,13 @@ spec:
     {{- end }}
       securityContext:
         privileged: true
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+        fsGroupChangePolicy: "OnRootMismatch"
+        capabilities:
+          add:
+            - SYS_ADMIN
       initContainers:
       - name: {{ include "rclone-hostpath.fullname" . }}-config
         image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
@@ -93,15 +100,16 @@ spec:
           preStop:
             exec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
-        securityContext:
-          privileged: true
-          runAsUser: 1000
-          runAsGroup: 1000
-          fsGroup: 1000
-          fsGroupChangePolicy: "OnRootMismatch"
-          capabilities:
-            add:
-              - SYS_ADMIN
+        # securityContext:
+        #   privileged: true
+        #   runAsNonRoot: true
+        #   runAsUser: 1000
+        #   runAsGroup: 1000
+        #   fsGroup: 1000
+        #   fsGroupChangePolicy: "OnRootMismatch"
+        #   capabilities:
+        #     add:
+        #       - SYS_ADMIN
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
