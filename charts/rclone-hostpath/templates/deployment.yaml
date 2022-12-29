@@ -78,8 +78,6 @@ spec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
         securityContext:
           privileged: true
-          runAsUser: 1000
-          runAsGroup: 1000
           fsGroup: 1000
           fsGroupChangePolicy: "OnRootMismatch"
           capabilities:
@@ -97,6 +95,8 @@ spec:
           mountPropagation: Bidirectional
         - mountPath: /dev/fuse
           name: dev-fuse
+        - mountPath: /etc/fuse.conf
+          name: fuse-conf
       volumes:
       - name: config
         emptyDir: {}
@@ -115,6 +115,9 @@ spec:
       - name: dev-fuse
         hostPath:
           path: /dev/fuse
+      - name: fuse-conf
+        hostPath:
+          path: /etc/fuse.conf
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
