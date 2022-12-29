@@ -87,6 +87,8 @@ spec:
         - name: data
           mountPath: "{{ .Values.rclone.path }}"
           mountPropagation: Bidirectional
+        - mountPath: /dev/fuse
+          name: dev-fuse
       volumes:
       - name: config
         emptyDir: {}
@@ -102,6 +104,9 @@ spec:
         hostPath:
           path: "{{ .Values.rclone.path }}"
           type: DirectoryOrCreate
+      - name: dev-fuse
+        hostPath:
+          path: /dev/fuse
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
