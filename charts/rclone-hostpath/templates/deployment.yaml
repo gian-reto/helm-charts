@@ -5,7 +5,10 @@ metadata:
   name: {{ include "rclone-hostpath.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-{{ include "rclone-hostpath.labels" . | indent 4 }}
+    app: {{ include "rclone-hostpath.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   selector:
     matchLabels:
@@ -35,6 +38,18 @@ spec:
       #   - name: config
       #     mountPath: /out
       # terminationGracePeriodSeconds: 120
+      initContainers:
+      - name: {{ .Chart.Name }}-config
+        image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
+        command:
+          - rm
+        args:
+          - -rf
+          - /data/*
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      terminationGracePeriodSeconds: 120
       containers:
       - name: {{ .Chart.Name }}-rclone
         image: "{{ .Values.images.container.repository }}:{{ .Values.images.container.tag }}"
@@ -43,7 +58,7 @@ spec:
           - "{{ .Values.rclone.remote }}:{{ .Values.rclone.subPath }}"
           - "{{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}"
           - --config=/etc/rclone/rclone.conf
-          - --allow-non-empty
+          # - --allow-non-empty
           - --allow-other
         {{- range .Values.rclone.mountArgs }}
           - {{ . }}
@@ -65,7 +80,7 @@ spec:
         - name: rclone-data
           mountPath: /var/lib/rclone
         - name: data
-          mountPath: {{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}
+          mountPath: "{{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}"
           mountPropagation: Bidirectional
       volumes:
       # - name: config
@@ -74,13 +89,13 @@ spec:
         secret:
           secretName: {{ .Values.rclone.configSecretName }}
           optional: false
-      - name: data
-        hostPath:
-          path: {{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}
-          type: DirectoryOrCreate
       - name: rclone-data
         hostPath:
-          path: {{ .Values.rclone.dataDir }}
+          path: "{{ .Values.rclone.dataDir }}"
+          type: DirectoryOrCreate
+      - name: data
+        hostPath:
+          path: "{{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}"
           type: DirectoryOrCreate
       {{- with .Values.nodeSelector }}
       nodeSelector:
