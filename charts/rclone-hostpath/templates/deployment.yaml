@@ -20,15 +20,6 @@ spec:
         app: {{ include "rclone-hostpath.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-      securityContext:
-        privileged: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: "OnRootMismatch"
-        capabilities:
-          add:
-            - SYS_ADMIN
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -78,6 +69,13 @@ spec:
           preStop:
             exec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
+        securityContext:
+          privileged: true
+          fsGroup: 1000
+          fsGroupChangePolicy: "OnRootMismatch"
+          capabilities:
+            add:
+              - SYS_ADMIN
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
