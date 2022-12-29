@@ -59,7 +59,7 @@ spec:
           - "{{ .Values.rclone.path }}"
           - --config=/etc/rclone/rclone.conf
           - --cache-dir={{ .Values.rclone.cacheDir }}
-          # - --allow-non-empty
+          - --allow-non-empty
           - --allow-other
         {{- range .Values.rclone.mountArgs }}
           - {{ . }}
