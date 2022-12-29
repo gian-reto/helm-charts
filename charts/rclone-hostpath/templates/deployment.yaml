@@ -55,9 +55,10 @@ spec:
         image: "{{ .Values.images.container.repository }}:{{ .Values.images.container.tag }}"
         args:
           - mount
-          - "{{ .Values.rclone.remote }}:{{ .Values.rclone.subPath }}"
-          - "{{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}"
+          - "{{ .Values.rclone.remote }}"
+          - "{{ .Values.rclone.path }}"
           - --config=/etc/rclone/rclone.conf
+          - --cache-dir={{ .Values.rclone.cacheDir }}
           # - --allow-non-empty
           - --allow-other
         {{- range .Values.rclone.mountArgs }}
@@ -66,7 +67,7 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}"]
+              command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
         securityContext:
           privileged: true
           capabilities:
@@ -77,10 +78,10 @@ spec:
         volumeMounts:
         - name: rclone-config
           mountPath: /etc/rclone
-        - name: rclone-data
-          mountPath: /var/lib/rclone
+        - name: cache
+          mountPath: "{{ .Values.rclone.cacheDir }}"
         - name: data
-          mountPath: "{{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}"
+          mountPath: "{{ .Values.rclone.path }}"
           mountPropagation: Bidirectional
       volumes:
       # - name: config
@@ -89,13 +90,13 @@ spec:
         secret:
           secretName: {{ .Values.rclone.configSecretName }}
           optional: false
-      - name: rclone-data
+      - name: cache
         hostPath:
-          path: "{{ .Values.rclone.dataDir }}"
+          path: "{{ .Values.rclone.cacheDir }}"
           type: DirectoryOrCreate
       - name: data
         hostPath:
-          path: "{{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}"
+          path: "{{ .Values.rclone.path }}"
           type: DirectoryOrCreate
       {{- with .Values.nodeSelector }}
       nodeSelector:
