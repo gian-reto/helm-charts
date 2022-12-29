@@ -65,7 +65,7 @@ spec:
         - name: rclone-data
           mountPath: /var/lib/rclone
         - name: data
-          mountPath: {{ .Values.rclone.path }}
+          mountPath: {{ .Values.rclone.path }}/{{ .Values.rclone.subPath }}
           mountPropagation: Bidirectional
       volumes:
       - name: config

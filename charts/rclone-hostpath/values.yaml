@@ -23,9 +23,9 @@ rclone:
     # - --vfs-cache-max-size=96G
     # - --vfs-write-back=5m
     # - --vfs-cache-max-age=9999h
-    # - --tpslimit="12"
-    # - --tpslimit-burst="12"
-    # - --disable-http2="true"
+    # - --tpslimit=12
+    # - --tpslimit-burst=12
+    # - --disable-http2=true
   # Directory on the host to store rclone data (cache, etc.)
   dataDir: /var/lib/rclone/
 
