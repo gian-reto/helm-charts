@@ -62,6 +62,10 @@ spec:
           - --allow-non-empty
           - --allow-other
           - --umask=000
+          - --gid=1000
+          - --uid=1000
+          - --dir-perms=0777
+          - --file-perms=0666
         {{- range .Values.rclone.mountArgs }}
           - {{ . }}
         {{- end }}
