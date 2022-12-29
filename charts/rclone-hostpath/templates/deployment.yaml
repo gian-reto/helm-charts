@@ -24,24 +24,22 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      # initContainers:
-      # - name: {{ .Chart.Name }}-config
-      #   image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
-      #   command:
-      #     - cp
-      #   args:
-      #     - -v
-      #     - /in/rclone.conf
-      #     - /out/rclone.conf
-      #   volumeMounts:
-      #   - name: config-data
-      #     mountPath: /in
-      #     readOnly: true
-      #   - name: config
-      #     mountPath: /out
-      # terminationGracePeriodSeconds: 120
       initContainers:
-      - name: {{ .Chart.Name }}-config
+      - name: {{ include "rclone-hostpath.fullname" . }}-config
+        image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
+        command:
+          - cp
+        args:
+          - -v
+          - /in/rclone.conf
+          - /out/rclone.conf
+        volumeMounts:
+        - name: rclone-config
+          mountPath: /in
+          readOnly: true
+        - name: config
+          mountPath: /out
+      - name: {{ include "rclone-hostpath.fullname" . }}-data
         image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
         command:
           - rm
@@ -53,7 +51,7 @@ spec:
           mountPath: /data
       terminationGracePeriodSeconds: 120
       containers:
-      - name: {{ .Chart.Name }}-rclone
+      - name: {{ include "rclone-hostpath.fullname" . }}
         image: "{{ .Values.images.container.repository }}:{{ .Values.images.container.tag }}"
         args:
           - mount
@@ -78,7 +76,7 @@ spec:
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
-        - name: rclone-config
+        - name: config
           mountPath: /etc/rclone
         - name: cache
           mountPath: "{{ .Values.rclone.cacheDir }}"
@@ -86,8 +84,8 @@ spec:
           mountPath: "{{ .Values.rclone.path }}"
           mountPropagation: Bidirectional
       volumes:
-      # - name: config
-      #   emptyDir: {}
+      - name: config
+        emptyDir: {}
       - name: rclone-config
         secret:
           secretName: {{ .Values.rclone.configSecretName }}
