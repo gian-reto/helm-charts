@@ -27,31 +27,31 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      securityContext:
-        privileged: true
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 0
-        fsGroupChangePolicy: "OnRootMismatch"
-        capabilities:
-          add:
-            - SYS_ADMIN
+      # securityContext:
+      #   privileged: true
+      #   runAsUser: 0
+      #   runAsGroup: 0
+      #   fsGroup: 0
+      #   fsGroupChangePolicy: "OnRootMismatch"
+      #   capabilities:
+      #     add:
+      #       - SYS_ADMIN
       initContainers:
-      - name: {{ include "rclone-hostpath.fullname" . }}-config
-        image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
-        command: ["/bin/sh"]
-        args:
-          - -c
-          - >-
-              cp -v /in/rclone.conf /out/rclone.conf &&
-              chown 1000:1000 /out/rclone.conf &&
-              chmod 766 /out/rclone.conf
-        volumeMounts:
-        - name: rclone-config
-          mountPath: /in
-          readOnly: true
-        - name: config
-          mountPath: /out
+      # - name: {{ include "rclone-hostpath.fullname" . }}-config
+      #   image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
+      #   command: ["/bin/sh"]
+      #   args:
+      #     - -c
+      #     - >-
+      #         cp -v /in/rclone.conf /out/rclone.conf &&
+      #         chown 1000:1000 /out/rclone.conf &&
+      #         chmod 766 /out/rclone.conf
+      #   volumeMounts:
+      #   - name: rclone-config
+      #     mountPath: /in
+      #     readOnly: true
+      #   - name: config
+      #     mountPath: /out
       # - name: {{ include "rclone-hostpath.fullname" . }}-clear
       #   image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
       #   command:
@@ -62,7 +62,7 @@ spec:
       #   volumeMounts:
       #   - name: data
       #     mountPath: /data
-      - name: {{ include "rclone-hostpath.fullname" . }}-directories
+      - name: {{ include "rclone-hostpath.fullname" . }}-init
         image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
         command: ["/bin/sh"]
         args:
@@ -70,12 +70,29 @@ spec:
           - >-
               rm -rf /data/* &&
               chown -R 1000:1000 /data &&
-              chown -R 1000:1000 /cache
+              chown -R 1000:1000 /cache &&
+              cp -v /in/rclone.conf /out/rclone.conf &&
+              chown 1000:1000 /out/rclone.conf &&
+              chmod 766 /out/rclone.conf
         volumeMounts:
         - name: data
           mountPath: /data
         - name: cache
           mountPath: /cache
+        - name: rclone-config
+          mountPath: /in
+          readOnly: true
+        - name: config
+          mountPath: /out
+        securityContext:
+          privileged: true
+          runAsUser: 0
+          runAsGroup: 0
+          fsGroup: 0
+          fsGroupChangePolicy: "OnRootMismatch"
+          capabilities:
+            add:
+              - SYS_ADMIN
       terminationGracePeriodSeconds: 120
       containers:
       - name: {{ include "rclone-hostpath.fullname" . }}
@@ -100,16 +117,15 @@ spec:
           preStop:
             exec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
-        # securityContext:
-        #   privileged: true
-        #   runAsNonRoot: true
-        #   runAsUser: 1000
-        #   runAsGroup: 1000
-        #   fsGroup: 1000
-        #   fsGroupChangePolicy: "OnRootMismatch"
-        #   capabilities:
-        #     add:
-        #       - SYS_ADMIN
+        securityContext:
+          privileged: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000
+          fsGroupChangePolicy: "OnRootMismatch"
+          capabilities:
+            add:
+              - SYS_ADMIN
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
