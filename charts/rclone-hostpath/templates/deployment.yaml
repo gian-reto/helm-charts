@@ -103,6 +103,7 @@ spec:
           - --config=/etc/rclone/rclone.conf
           - --cache-dir={{ .Values.rclone.cacheDir }}
           - --allow-other
+          - --allow-non-empty
           - --umask=002
         {{- range .Values.rclone.mountArgs }}
           - {{ . }}
