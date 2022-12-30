@@ -107,7 +107,6 @@ spec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
         securityContext:
           privileged: true
-          runAsNonRoot: true
           runAsUser: 1000
           runAsGroup: 1000
           fsGroup: 1000
