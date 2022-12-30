@@ -28,13 +28,15 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       initContainers:
-      - name: {{ include "rclone-hostpath.fullname" . }}-config
+      - name: {{ include "rclone-hostpath.fullname" . }}-init
         image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
         command: ["/bin/sh"]
         args:
           - -c
           - >-
-              cp -v /in/rclone.conf /out/rclone.conf
+              cp -v /in/rclone.conf /out/rclone.conf &&
+              chown -R 1000:1000 {{ .Values.rclone.path }} &&
+              chown -R 1000:1000 {{ .Values.rclone.cacheDir }}
         volumeMounts:
         - name: rclone-config
           mountPath: /in
@@ -96,14 +98,6 @@ spec:
           - {{ . }}
         {{- end }}
         lifecycle:
-          preStart:
-            exec:
-              command: ["/bin/sh"]
-              args:
-                - -c
-                - >-
-                    chown -R 1000:1000 {{ .Values.rclone.path }} &&
-                    chown -R 1000:1000 {{ .Values.rclone.cacheDir }}
           preStop:
             exec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
