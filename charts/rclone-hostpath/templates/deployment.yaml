@@ -88,8 +88,8 @@ spec:
           - --allow-non-empty
           - --allow-other
           - --umask=000
-          - --gid=1000
-          - --uid=1000
+          - --uid={{ .Values.rclone.uid }}
+          - --gid={{ .Values.rclone.gid }}
           - --dir-perms=0777
           - --file-perms=0666
         {{- range .Values.rclone.mountArgs }}
@@ -101,9 +101,9 @@ spec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
         securityContext:
           privileged: true
-          runAsUser: 1000
-          runAsGroup: 1000
-          fsGroup: 1000
+          runAsUser: {{ .Values.rclone.uid }}
+          runAsGroup: {{ .Values.rclone.gid }}
+          fsGroup: {{ .Values.rclone.gid }}
           fsGroupChangePolicy: "OnRootMismatch"
           capabilities:
             add:

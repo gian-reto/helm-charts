@@ -10,6 +10,9 @@ images:
 replicas: 1
 
 rclone:
+  # User and group id to run rclone as (must have write access to `path` and `cacheDir`)
+  uid: 1000
+  gid: 1000
   # Name of the remote to mount (from rclone.conf), e.g. "dropbox:"
   remote: "remote:"
   # Path to mount the remote on the host
