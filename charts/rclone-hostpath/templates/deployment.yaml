@@ -28,7 +28,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       initContainers:
-      - name: {{ include "rclone-hostpath.fullname" . }}-init
+      - name: {{ include "rclone-hostpath.fullname" . }}-config
         image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
         command: ["/bin/sh"]
         args:
@@ -41,6 +41,21 @@ spec:
           readOnly: true
         - name: config
           mountPath: /out
+      - name: {{ include "rclone-hostpath.fullname" . }}-permissions
+        image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
+        command: ["/bin/sh"]
+        args:
+          - -c
+          - >-
+              chown -R {{ .Values.rclone.uid }}:{{ .Values.rclone.gid }} {{ .Values.rclone.cacheDir }} && 
+              chown -R {{ .Values.rclone.uid }}:{{ .Values.rclone.gid }} {{ .Values.rclone.path }}
+        volumeMounts:
+        - name: cache
+          mountPath: "{{ .Values.rclone.cacheDir }}"
+        - name: data
+          mountPath: "{{ .Values.rclone.path }}"
+        securityContext:
+          privileged: true
       # - name: {{ include "rclone-hostpath.fullname" . }}-clear
       #   image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
       #   command:
