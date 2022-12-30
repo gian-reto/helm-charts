@@ -98,12 +98,18 @@ spec:
         lifecycle:
           preStart:
             exec:
-              command: ["/bin/sh","-c","chown -R 1000:1000 {{ .Values.rclone.cacheDir }}"]
+              command: ["/bin/sh"]
+              args:
+                - -c
+                - >-
+                    chown -R 1000:1000 {{ .Values.rclone.path }} &&
+                    chown -R 1000:1000 {{ .Values.rclone.cacheDir }}
           preStop:
             exec:
               command: ["/bin/sh","-c","fusermount -uz {{ .Values.rclone.path }}"]
         securityContext:
           privileged: true
+          runAsNonRoot: true
           runAsUser: 1000
           runAsGroup: 1000
           fsGroup: 1000

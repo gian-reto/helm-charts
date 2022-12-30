@@ -2,6 +2,8 @@ FROM alpine:3.17
 
 ARG RCLONE_VERSION=1.61.1
 
+USER 1000:1000 
+
 RUN apk add --no-cache --virtual=build-dependencies wget unzip && \
     cd tmp && \
     wget -q --no-check-certificate https://downloads.rclone.org/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-amd64.zip && \
