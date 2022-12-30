@@ -34,19 +34,13 @@ spec:
         args:
           - -c
           - >-
-              cp -v /in/rclone.conf /out/rclone.conf &&
-              chown -R 1000:1000 {{ .Values.rclone.path }} &&
-              chown -R 1000:1000 {{ .Values.rclone.cacheDir }}
+              cp -v /in/rclone.conf /out/rclone.conf
         volumeMounts:
         - name: rclone-config
           mountPath: /in
           readOnly: true
         - name: config
           mountPath: /out
-        - name: cache
-          mountPath: "{{ .Values.rclone.cacheDir }}"
-        - name: data
-          mountPath: "{{ .Values.rclone.path }}"
       # - name: {{ include "rclone-hostpath.fullname" . }}-clear
       #   image: "{{ .Values.images.initContainer.repository }}:{{ .Values.images.initContainer.tag }}"
       #   command:

@@ -1,4 +1,4 @@
 apiVersion: v2
 description: Deployment to create an rclone mount on a hostPath
 name: rclone-hostpath
-version: 0.2.6
+version: 0.2.7
